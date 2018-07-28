@@ -13,6 +13,15 @@ namespace WebReviews
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            // /cuisine/french
+
+            routes.MapRoute("Cuisine",
+                "cuisine/{name}",
+                new { controller = "Cuisine", action = "Search", name = UrlParameter.Optional });
+
+
+            // /home
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
