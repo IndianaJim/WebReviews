@@ -2,88 +2,67 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Data.Entity;
 using System.Web.Mvc;
+using WebReviews.Models;
 
 namespace WebReviews.Controllers
 {
     public class ReviewsController : Controller
     {
+        WebReviewsDB _db = new WebReviewsDB();
+
         // GET: Reviews
-        public ActionResult Index()
+        public ActionResult Index([Bind(Prefix = "id")] int restaurantId)
+        {
+            var restaurant = _db.Restaurants.Find(restaurantId);
+            if (restaurant != null)
+            {
+                return View(restaurant);
+            }
+            return HttpNotFound();
+        }
+
+        [HttpGet]
+        public ActionResult Create(int restaurantId)
         {
             return View();
         }
 
-        // GET: Reviews/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Reviews/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Reviews/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(RestaurantReview review)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
+                _db.Reviews.Add(review);
+                _db.SaveChanges();
+                return RedirectToAction("Index", new { id = review.RestaurantId });
             }
-            catch
-            {
-                return View();
-            }
+            return View(review);
         }
 
-        // GET: Reviews/Edit/5
+        [HttpGet]
         public ActionResult Edit(int id)
         {
-            return View();
+            var model = _db.Reviews.Find(id);
+            return View(model);
         }
 
-        // POST: Reviews/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(RestaurantReview review)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
+                _db.Entry(review).State = EntityState.Modified;
+                _db.SaveChanges();
+                return RedirectToAction("Index", new { id = review.RestaurantId });
             }
-            catch
-            {
-                return View();
-            }
+            return View(review);
         }
-
-        // GET: Reviews/Delete/5
-        public ActionResult Delete(int id)
+        protected override void Dispose(bool disposing)
         {
-            return View();
-        }
-
-        // POST: Reviews/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            _db.Dispose();
+            base.Dispose(disposing);
         }
 
     }
