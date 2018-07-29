@@ -33,7 +33,7 @@ namespace WebReviews.Migrations
                     Reviews =
                         new List<RestaurantReview>
                         {
-                            new RestaurantReview { Rating = 9, Body="Yummy pizza!"}
+                            new RestaurantReview { Rating = 9, Body="Yummy pizza!", ReviewerName = "Bob"}
                         }
                 });
         }

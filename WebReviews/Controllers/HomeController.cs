@@ -9,19 +9,35 @@ namespace WebReviews.Controllers
     {
         WebReviewsDB _db = new WebReviewsDB();
 
-        public ActionResult Index()
+        public ActionResult Index(string searchTerm = null)
         {
 
-            var model = _db.Restaurants.ToList();
+
+            var model =
+                _db.Restaurants
+                    .OrderByDescending(r => r.Reviews.Average(review => review.Rating))
+                    .Where(r => searchTerm == null || r.Name.StartsWith(searchTerm))
+                    .Select(r => new RestaurantListViewModel
+                    {
+                        Id = r.Id,
+                        Name = r.Name,
+                        City = r.City,
+                        Country = r.Country,
+                        CountOfReviews = r.Reviews.Count()
+                    }
+                    );
+
             return View(model);
         }
 
         public ActionResult About()
         {
 
-            var model = new AboutModel();
-            model.Name = "Jim";
-            model.Location = "Indianapolis, IN";
+            var model = new AboutModel
+            {
+                Name = "Jim",
+                Location = "Indianapolis, IN"
+            };
 
             return View(model);
         }
@@ -35,7 +51,7 @@ namespace WebReviews.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            if(_db != null)
+            if (_db != null)
             {
                 _db.Dispose();
             }
