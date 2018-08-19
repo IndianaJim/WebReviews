@@ -4,21 +4,22 @@
     ViewBag.Title = "Home Page";
 }
 
-<form method="get">
-    <input type="search" name="searchTerm" />
-    <input type="submit" value="Search by Name" />
-</form>
+@*<form method="get">
+        <input type="search" name="searchTerm" />
+        <input type="submit" value="Search by Name" />
+    </form>*@
 
-@foreach (var item in Model)
+@using (Ajax.BeginForm(
+    new AjaxOptions
+    {
+        HttpMethod = "get",
+        InsertionMode = InsertionMode.Replace,
+        UpdateTargetId = "restaurantList"
+    }))
 {
-    <div>
-        <h3>@item.Name</h3>
-        <div>
-            @item.City, @item.Country
-        </div>
-        <div>
-            Reviews: @item.CountOfReviews
-        </div>
-        <hr />
-    </div>
-} 
+    <input type="search" name="searchTerm" data-otf-autocomplete="@Url.Action("Autocomplete")"/>
+    <input type="submit" value="Search by Name" />
+}
+
+@Html.Partial("_Restaurants",Model)
+ 

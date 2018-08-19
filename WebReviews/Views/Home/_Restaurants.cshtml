@@ -1,0 +1,18 @@
+﻿@model IEnumerable<WebReviews.Models.RestaurantListViewModel>
+
+<div id="restuarantList">
+    @foreach (var item in Model)
+    {
+        <div>
+            <h3>@item.Name</h3>
+            <div>
+                @item.City, @item.Country
+            </div>
+            <div>
+                Reviews: @item.CountOfReviews
+            </div>
+            <hr />
+        </div>
+    }
+
+</div>
